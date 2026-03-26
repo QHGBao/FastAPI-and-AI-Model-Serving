@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Assessment</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://wallpapers.com/images/hd/house-background-v30ik8bmy5cumnzx.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.07);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        h1 {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+        }
+        p {
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+            font-size: 0.85em;
+        }
+        .btn {
+            background: #00b894;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 0.9em;
+            border-radius: 6px;
+            transition: background 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #019875;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>House Price Assessment</h1>
+        <p class="subtitle">Fill in the property details to estimate the price.</p>
+
+        <form id="predictForm">
+            <div class="form-group">
+                <label>Area (m²)</label>
+                <input type="number" name="area" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label>Number of Bedrooms</label>
+                <input type="number" name="bedrooms" required>
+            </div>
+
+            <div class="form-group">
+                <label>Number of Bathrooms</label>
+                <input type="number" name="bathrooms" required>
+            </div>
+
+            <div class="form-group">
+                <label>Number of floors</label>
+                <input type="number" name="floors" required>
+            </div>
+
+            <div class="form-group">
+                <label>Property Type</label>
+                <select name="property_type" required>
+                    <option value="" selected disabled>Select Property Type</option>
+                    <option value="Villa">Villa</option>
+                    <option value="Shophouse">Shophouse</option>
+                    <option value="Private House">Private House</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Street House">Street House</option>
+                    <option value="Land">Land</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Furniture</label>
+                <select name="furniture" required>
+                    <option value="" selected disabled>Select Furniture Level</option>
+                    <option value="None">None</option>
+                    <option value="Basic">Basic</option>
+                    <option value="Full">Full</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Legal Status</label>
+                <select name="legal_status" required>
+                    <option value="" selected disabled>Select Legal Status</option>
+                    <option value="Has Title">Has Title</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Maximum Distance to City Center (km)</label>
+                <input type="number" name="distance_to_center" required>
+            </div>
+
+            <button type="submit" class="btn">Estimate</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById("predictForm").addEventListener("submit", async function(e) {
+            e.preventDefault(); // chặn reload trang
+
+            const data = [{
+                area: parseFloat(document.querySelector('[name="area"]').value),
+                bedrooms: parseInt(document.querySelector('[name="bedrooms"]').value),
+                bathrooms: parseInt(document.querySelector('[name="bathrooms"]').value),
+                floors: parseInt(document.querySelector('[name="floors"]').value),
+                property_type: document.querySelector('[name="property_type"]').value,
+                furniture: document.querySelector('[name="furniture"]').value,
+                legal_status: document.querySelector('[name="legal_status"]').value,
+                distance_to_center: parseInt(document.querySelector('[name="distance_to_center"]').value)
+            }];
+
+            const res = await fetch("http://localhost:8000/API/v1/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) {
+                const error = await res.json();
+                console.log(JSON.stringify(error, null, 2));
+                console.error("ERROR:", error);
+                alert("API lỗi! Xem console (F12)");
+                return;
+            }
+            const result = await res.json();
+
+            const item = result.prediction[0];
+            let message = "";
+            message += `Input:\n`
+            message += `Area: ${item.features.area}\n`;
+            message += `Bedrooms: ${item.features.bedrooms}\n`;
+            message += `Bathrooms: ${item.features.bathrooms}\n`;
+            message += `Floors: ${item.features.floors}\n`;
+            message += `Property Type: ${item.features.property_type}\n`;
+            message += `Furniture: ${item.features.furniture}\n`;
+            message += `Legal Status: ${item.features.legal_status}\n`;
+            message += `Distance To Center: ${item.features.distance_to_center}\n\n`;
+            message += `Output:\n`
+            message += `Price: ${item.price}`;
+
+            alert(message);
+        });
+        </script>
+
+</body>
+</html>
