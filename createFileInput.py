@@ -1,13 +1,15 @@
 import random
 import json
+from src.ml.constants import N_REQUESTS
 
 property_types = ["Villa", "Shophouse", "Private House", "Apartment", "Street House", "Land", "Other"]
 furnitures = ["None", "Basic", "Full", "Other"]
 legal_statuses = ["Has Title", "Contract", "Other"]
 
 data = []
+n_requests = N_REQUESTS
 
-for _ in range(100):
+for _ in range(n_requests):
     item = {
         "area": round(random.uniform(30, 500), 2),
         "bedrooms": random.randint(1, 10),
@@ -21,7 +23,7 @@ for _ in range(100):
     data.append(item)
 
 # Xuất ra file JSON
-with open("100_Examples.txt", "w", encoding="utf-8") as f:
+with open(f"{n_requests}_Examples.json", "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 
-print("Đã tạo file 100_Examples.txt")
+print(f"Đã tạo file {n_requests}_Examples.json")

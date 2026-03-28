@@ -6,3 +6,6 @@ __pycache__
 
 # Files .ipynb
 *.ipynb
+
+# Files .json
+*.json

@@ -4,9 +4,9 @@ import json
 import time
 
 URL = "http://127.0.0.1:8000/API/v1/predict"
-MAX_CONCURRENT_REQUESTS = 100
+MAX_CONCURRENT_REQUESTS = 1000
 
-with open("1000_Examples.txt", "r", encoding="utf-8") as f:
+with open("1000_Examples.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
@@ -43,10 +43,10 @@ async def main():
 
     # Tạo 1 client duy nhất
     async with httpx.AsyncClient(timeout=60.0) as client:
-        tasks = [
-            send_request(client, sample, i)
-            for i, sample in enumerate(data)
-        ]
+        tasks = []
+        for i, sample in enumerate(data):
+            tasks.append(send_request(client, sample, i))
+
 
         results = await asyncio.gather(*tasks)
 

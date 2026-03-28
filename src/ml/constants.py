@@ -18,4 +18,3 @@ FEATURE = [
     "legal_status",
     "distance_to_center"
 ]
-

@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from .schemas import PredictionRequest, PredictionResponse
-from .service import make_prediction, make_batch_prediction
+from .service import make_batch_prediction
 from fastapi.concurrency import run_in_threadpool
 from typing import List
-# from src.ml.model import predict_price
+
 router = APIRouter()
 
 
