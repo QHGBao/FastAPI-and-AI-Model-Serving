@@ -3,12 +3,23 @@ from src.predictions.router import router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, Request
+from contextlib import asynccontextmanager
+from src.ml.model_loader import load_model
 import time
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_model()
+    yield
+    print("Kết thúc chương trình")
+
 
 app_run = FastAPI(
     title = "FastAPI và AI Model Serving",
     description = "API dự đoán giá nhà",
-    version = "1.0"
+    version = "1.0",
+    lifespan=lifespan
 )
 
 templates = Jinja2Templates(directory="templates")

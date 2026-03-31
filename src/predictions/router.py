@@ -13,4 +13,4 @@ async def predict(data: List[PredictionRequest]):
         return {"prediction": []}
     # Nếu nhiều sample → batch
     result = await run_in_threadpool(make_batch_prediction, data)
-    return {"prediction": result}
+    return result

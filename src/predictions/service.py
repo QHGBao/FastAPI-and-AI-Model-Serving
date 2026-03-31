@@ -2,6 +2,7 @@ from src.ml.model import predict_batch_price
 from src.ml.schemas import HouseFeatures
 from .schemas import PredictionRequest
 from typing import List
+from src.ml import model_loader
 import pandas as pd
 
 def make_batch_prediction(requests: List[PredictionRequest]):
@@ -19,7 +20,7 @@ def make_batch_prediction(requests: List[PredictionRequest]):
         )
         data.append(features.model_dump())
     df = pd.DataFrame(data)
-    preds = predict_batch_price(df)
+    preds = predict_batch_price(df, model_loader.model, model_loader.processor)
     ls_results = []
     for i,p in enumerate(preds):
         ls_results.append({
