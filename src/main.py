@@ -50,4 +50,7 @@ async def log_time(request: Request, call_next):
 # ===== API =====
 @app_run.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("predict.html", {"request": request})
+    return templates.TemplateResponse(
+    request=request, 
+    name="predict.html"
+    )
