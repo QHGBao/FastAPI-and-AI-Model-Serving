@@ -11,4 +11,8 @@ __pycache__
 *.json
 
 # Folder ex
-Mini_exercises
+
+venv/
+__pycache__/
+*.pyc
+.env
