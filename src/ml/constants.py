@@ -18,3 +18,5 @@ FEATURE = [
     "legal_status",
     "distance_to_center"
 ]
+
+FILE_NAME_TEST = "1000_Examples"

@@ -1,12 +1,23 @@
+import sys
+import os
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
 import asyncio
 import httpx
 import json
 import time
+from src.config import MAX_CONCURRENT_REQUESTS
+from src.ml.constants import FILE_NAME_TEST
 
 URL = "http://127.0.0.1:8000/API/v1/predict"
-MAX_CONCURRENT_REQUESTS = 100
 
-with open("1000_Examples.json", "r", encoding="utf-8") as f:
+INPUT_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "data", f"{FILE_NAME_TEST}.json")
+)
+
+with open(INPUT_PATH, "r", encoding="utf-8") as f:
     data = json.load(f)
 
 semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)

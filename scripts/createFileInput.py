@@ -1,6 +1,16 @@
+import os
+import sys
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
 import random
 import json
-from src.ml.constants import N_REQUESTS
+from src.config import N_REQUESTS
+
+OUTPUT_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "data", f"{N_REQUESTS}_Examples.json")
+)
 
 property_types = ["Villa", "Shophouse", "Private House", "Apartment", "Street House", "Land", "Other"]
 furnitures = ["None", "Basic", "Full", "Other"]
@@ -23,7 +33,7 @@ for _ in range(n_requests):
     data.append(item)
 
 # Xuất ra file JSON
-with open(f"{n_requests}_Examples.json", "w", encoding="utf-8") as f:
+with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 
 print(f"Đã tạo file {n_requests}_Examples.json")
